@@ -14,9 +14,9 @@ export class MailService {
     async sendMail(contact: CreateContactDto): Promise<string> {
         try {
             const { data, error } = await this.resend.emails.send({
-                from: `${process.env.APP_NAME} <onboarding@resend.dev>`,
+                from: `${process.env.APP_NAME} <no-reply@${process.env.APP_DOMAIN}>`,
                 to: [process.env.APP_EMAIL],
-                subject: `New Lead: ${contact.name}`,
+                subject: `New Contact Submission`,
                 html: `
           <strong>Name:</strong> ${contact.name}<br>
           <strong>Email:</strong> ${contact.email}<br>
