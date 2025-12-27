@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 
@@ -9,10 +9,5 @@ export class ContactController {
     @Post('create')
     create(@Body() createContactDto: CreateContactDto) {
         return this.contactService.create(createContactDto);
-    }
-
-    @Get('view')
-    findAll() {
-        return this.contactService.findAll();
     }
 }

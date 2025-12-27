@@ -1,28 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import {
+    Injectable,
+    InternalServerErrorException,
+    Logger,
+} from '@nestjs/common';
 import { Resend } from 'resend';
-import { Contact } from './Contact/contact.entity';
+import { CreateContactDto } from './Contact/dto/create-contact.dto';
 
 @Injectable()
 export class MailService {
-    private resend = new Resend(process.env.RESEND_API_KEY);
+    private readonly resend = new Resend(process.env.RESEND_API_KEY);
+    private readonly logger = new Logger(MailService.name);
 
-    async sendMail(contact: Contact) {
-        const { data, error } = await this.resend.emails.send({
-            from: `${process.env.APP_NAME} <no-reply@${process.env.APP_DOMAIN}>`,
-            to: [process.env.APP_EMAIL],
-            subject: 'New Contact Form Submission',
-            html: `
-            <p>Name: ${contact.name}</p>
-            <p>Message: ${contact.message}</p>
-            <p>Company: ${contact?.company}</p>
-            <p>Email: ${contact.email}</p>
-            `,
-        });
+    async sendMail(contact: CreateContactDto): Promise<string> {
+        try {
+            const { data, error } = await this.resend.emails.send({
+                from: `${process.env.APP_NAME} <onboarding@resend.dev>`,
+                to: [process.env.APP_EMAIL],
+                subject: `New Lead: ${contact.name}`,
+                html: `
+          <strong>Name:</strong> ${contact.name}<br>
+          <strong>Email:</strong> ${contact.email}<br>
+          <strong>Company:</strong> ${contact.company ?? 'N/A'}<br>
+          <strong>Message:</strong> <br>
+          <p>${contact.message}</p>
+          `,
+            });
 
-        if (error) {
-            throw new Error(error.message);
+            if (error) {
+                this.logger.error(`Resend API Error: ${error.message}`);
+                throw new InternalServerErrorException('Failed to send email');
+            }
+
+            return data.id;
+        } catch (err) {
+            this.logger.error('Unexpected Mailer Failure', err.stack);
+            throw err;
         }
-
-        return data?.id;
     }
 }

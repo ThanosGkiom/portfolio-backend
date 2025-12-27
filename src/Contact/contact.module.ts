@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ContactService } from './contact.service';
 import { ContactController } from './contact.controller';
-import { Contact } from './contact.entity';
+import { MailModule } from 'src/mail.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Contact])],
+    imports: [MailModule],
     providers: [ContactService],
     controllers: [ContactController],
 })
