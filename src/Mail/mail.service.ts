@@ -4,7 +4,7 @@ import {
     Logger,
 } from '@nestjs/common';
 import { Resend } from 'resend';
-import { CreateContactDto } from './Contact/dto/create-contact.dto';
+import { CreateContactDto } from '../Contact/dto/create-contact.dto';
 
 @Injectable()
 export class MailService {
@@ -32,8 +32,9 @@ export class MailService {
             }
 
             return data.id;
-        } catch (err) {
-            this.logger.error('Unexpected Mailer Failure', err.stack);
+        } catch (err: unknown) {
+            const stack = err instanceof Error ? err.stack : undefined;
+            this.logger.error('Unexpected Mailer Failure', stack);
             throw err;
         }
     }

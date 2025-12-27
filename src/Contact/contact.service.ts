@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateContactDto } from './dto/create-contact.dto';
-import { Response } from 'src/response.interface';
-import { MailService } from 'src/mail.service';
+import { Response } from '../response.interface';
+import { MailService } from '../Mail/mail.service';
 
 @Injectable()
 export class ContactService {
