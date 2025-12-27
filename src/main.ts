@@ -12,13 +12,7 @@ async function bootstrap() {
             transform: true,
         }),
     ).enableCors({
-        origin: [process.env.FRONTEND_URL],
-
-        allowedHeaders: ['Content-Type', 'Accept'],
-
-        methods: ['GET', 'POST'],
-
-        credentials: true,
+        origin: '*',
     });
 
     await app.listen(3000);
